@@ -9,10 +9,10 @@
 -}
 
 
-fib :: Int -> Int
-fib n | n == 0      = 0
-      | n > 0       = calcFib 0 1 n
-      | n < 0       = calcFibNeg 0 1 n
+fibonacci :: Int -> Int
+fibonacci n | n == 0      = 0
+            | n > 0       = calcFib 0 1 n
+            | n < 0       = calcFibNeg 0 1 n
 
 
 calcFib preLast last 1 = 1
