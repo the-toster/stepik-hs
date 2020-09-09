@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-
+// в ночи не мог решить 1.5.10, написал это, потом уже .hs
 function fib(int $n): int {
 
     $preLast = 0;
