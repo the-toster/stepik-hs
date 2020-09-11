@@ -1,4 +1,6 @@
 {-
+что такое curry id?
+
 curry :: ((a, b) -> c) -> a -> b -> c
 id :: t -> t
 
