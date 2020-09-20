@@ -14,11 +14,12 @@ instance Enum Odd where
     enumFromThen a b = iterate (step a b) a where
                             step (Odd a) (Odd b) (Odd c) = Odd(c + (b - a))
 
-    enumFromTo a b | a < b     = takeWhile ( <= b) $ enumFrom a
-                   | otherwise = takeWhile ( >= b) $ enumFromThen a $ pred a
+    enumFromTo a b | a <= b    = takeWhile ( <= b) $ enumFrom a
+                   | otherwise = []
 
-    enumFromThenTo a b c | a < b     = takeWhile ( <= c) $ enumFromThen a b
-                         | otherwise = takeWhile ( >= c) $ enumFromThen a b
+    enumFromThenTo a b c | a <= b && c >= a = takeWhile ( <= c) $ enumFromThen a b
+                         | a >  b && c <= a = takeWhile ( >= c) $ enumFromThen a b
+                         | otherwise      = []
 
 instance Ord Odd where
     compare (Odd a) (Odd b) = compare a b
@@ -61,11 +62,9 @@ test13 = take 4 [testVal 5, testVal 5 .. testVal 5] == replicate 4 (testVal 5)
 test14 = [testVal 5, testVal 5 .. testVal 3] == []
 test15 = [testVal 5, testVal 1 .. testVal 5] == [testVal 5]
 test16 = toEnum (fromEnum (Odd 3)) == Odd 3
--- Это сомнительный тест. Скорее всего, его нет на stepik
-test17 = fromEnum(Odd 3) + 1 == fromEnum(Odd 5)
 
 testList = [test0, test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-            test11, test12, test13, test14, test15, test16, test17]
+            test11, test12, test13, test14, test15, test16]
 allTests = zip [0..] testList
 -- Список тестов с ошибками
 badTests = map fst $ filter (not . snd) allTests
