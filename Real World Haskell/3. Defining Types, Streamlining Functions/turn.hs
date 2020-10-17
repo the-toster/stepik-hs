@@ -10,6 +10,11 @@ data Point = Point Double Double
  Но попробую как там написано.
 -}
 
+
+listDirection :: [Point] -> [Direction]
+listDirection (a:b:c:rest) = (calcDirection a b c) : listDirection (b:c:rest)
+listDirection _            = []
+
 calcDirection :: Point -> Point -> Point -> Direction
 calcDirection a b c = directionOfProduct $ crossProduct (toBasis a b) (toBasis a c)
 
@@ -29,7 +34,11 @@ pR = Point 20 10
 tst = [
         calcDirection pA pB pC == Straight,
         calcDirection pA pB pL == LeftTurn,
-        calcDirection pA pB pR == RightTurn
+        calcDirection pA pB pR == RightTurn,
+        listDirection [pA, pB, pC] == [Straight],
+        listDirection [pA, pB, pL] == [LeftTurn],
+        listDirection [pA, pB, pR] == [RightTurn],
+        listDirection [pA, pB, pL, Point 20 50, Point 10 50] == [LeftTurn, Straight, LeftTurn]
     ]
 
 {-
