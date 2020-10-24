@@ -30,8 +30,38 @@ instance Misty ((->) t) where
   banana f tToa = \t -> f (tToa t) t
   unicorn e = \x -> e
 
-tArr = let
-                p = unicorn 3 :: (Int -> Int)
-                k = (\x y -> x + y) :: (Int -> Int -> Int)
-                b = banana k p :: (Int -> Int)
-                in  ((-) `banana` ((+) `banana` p)) 1
+testArrLaws = [testLaw1, testLaw2, testLaw3] where
+        bna :: Misty m => m a -> (a -> m b) -> m b
+        bna = flip banana
+        returnA :: (Integer -> Integer)
+        a = 2 :: Integer
+        returnA = unicorn a
+        f = (^)
+        m = f a
+        g = (+)
+        testLaw1 = (returnA `bna` f) 10      == (f a) 10
+        testLaw2 = (m `bna` unicorn) 10      == m 10
+        testLaw3 = ((m `bna` f) `bna` g) 10  == (m `bna` (\x -> f x `bna` g)) 10
+
+
+
+newtype EitherLeft b a = EitherLeft (Either a b)
+newtype EitherRight a b = EitherRight (Either a b)
+
+-- Exercise 10
+-- Relative Difficulty: 6
+instance Misty (EitherLeft t) where
+--  banana :: (a -> m b) -> m a -> m b
+--  banana :: (a -> EitherLeft t b) -> EitherLeft t a -> EitherLeft t b
+  banana k (EitherLeft (Left a)) = k a
+  banana _ (EitherLeft (Right a)) = EitherLeft (Right a)
+--  unicorn :: a -> m a
+  unicorn b = EitherLeft (Left b)
+
+
+-- Exercise 11
+-- Relative Difficulty: 6
+instance Misty (EitherRight t) where
+  banana k (EitherRight (Right a)) = k a
+  banana _ (EitherRight (Left a)) = EitherRight (Left a)
+  unicorn a = EitherRight (Right a)
