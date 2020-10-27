@@ -65,3 +65,21 @@ instance Misty (EitherRight t) where
   banana k (EitherRight (Right a)) = k a
   banana _ (EitherRight (Left a)) = EitherRight (Left a)
   unicorn a = EitherRight (Right a)
+
+
+-- Exercise 12
+-- Relative Difficulty: 3
+jellybean :: (Misty m) => m (m a) -> m a
+jellybean = banana id
+
+
+-- Exercise 13
+-- Relative Difficulty: 6
+--apple :: (Misty m) => m a -> m (a -> b) -> m b
+--apple ma mab = jellybean $ banana (\a -> (banana (\fab -> fab a)  mab)) ma
+apl :: (Misty m) => m a -> m (a -> b) -> m b
+apl ma mab = banana (\fab -> fab a)
+--
+--  banana :: (a -> m b) -> m a -> m b
+--  unicorn :: a -> m a
+--  furry' :: (a -> b) -> m a -> m b
