@@ -76,10 +76,7 @@ jellybean = banana id
 -- Exercise 13
 -- Relative Difficulty: 6
 --apple :: (Misty m) => m a -> m (a -> b) -> m b
---apple ma mab = jellybean $ banana (\a -> (banana (\fab -> fab a)  mab)) ma
-apl :: (Misty m) => m a -> m (a -> b) -> m b
-apl ma mab = banana (\fab -> fab a)
---
+apple mx mf = furry' (jellybean mf) mx
 --  banana :: (a -> m b) -> m a -> m b
 --  unicorn :: a -> m a
 --  furry' :: (a -> b) -> m a -> m b
