@@ -84,4 +84,4 @@ apple ma mab = banana (\ab -> banana (\a -> unicorn (ab a) ) ma) mab
 -- Exercise 14
 -- Relative Difficulty: 6
 moppy :: (Misty m) => [a] -> (a -> m b) -> m [b]
-moppy xs k = undefined
+moppy xs k = foldl (\acc mb -> banana (\b -> banana (\bs -> unicorn (b:bs) ) acc) mb) (unicorn []) (map k xs)
