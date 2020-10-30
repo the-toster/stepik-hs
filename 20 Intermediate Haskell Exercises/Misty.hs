@@ -85,3 +85,29 @@ apple ma mab = banana (\ab -> banana (\a -> unicorn (ab a) ) ma) mab
 -- Relative Difficulty: 6
 moppy :: (Misty m) => [a] -> (a -> m b) -> m [b]
 moppy xs k = foldl (\acc mb -> banana (\b -> banana (\bs -> unicorn (b:bs) ) acc) mb) (unicorn []) (map k xs)
+
+-- Exercise 15
+-- Relative Difficulty: 6
+-- (bonus: use moppy)
+sausage :: (Misty m) => [m a] -> m [a]
+sausage ms = moppy ms id
+
+-- Exercise 16
+-- Relative Difficulty: 6
+-- (bonus: use apple + furry')
+-- apple :: (Misty m) => m a -> m (a -> b) -> m b
+--  furry' :: (a -> b) -> m a -> m b
+banana2 :: (Misty m) => (a -> b -> c) -> m a -> m b -> m c
+banana2 f ma mb = apple mb (furry' f ma)
+
+-- Exercise 17
+-- Relative Difficulty: 6
+-- (bonus: use apple + banana2)
+banana3 :: (Misty m) => (a -> b -> c -> d) -> m a -> m b -> m c -> m d
+banana3 f ma mb mc = apple mc (banana2 f ma mb)
+
+-- Exercise 18
+-- Relative Difficulty: 6
+-- (bonus: use apple + banana3)
+banana4 :: (Misty m) => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
+banana4 f ma mb mc md = apple md (banana3 f ma mb mc)
