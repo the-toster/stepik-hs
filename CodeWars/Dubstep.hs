@@ -1,7 +1,8 @@
-module Codewars.Kata.Dubstep where
+module Dubstep where
+import Data.List.Split (splitOn)
 
 songDecoder :: String -> String
-songDecoder = error "todo: songDecoder"
+songDecoder str = unwords $ filter ( /= "") (splitOn "WUB" str)
 
 
 tst = [
