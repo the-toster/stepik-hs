@@ -40,7 +40,7 @@ fromS a = a :> fromS (a + 1)
 
 -- | Same as 'fromS', but count with a given step width.
 fromStepS :: Num a => a -> a -> Stream a
-fromStepS x s = x :> fromS (x + s)
+fromStepS x s = x :> fromStepS (x + s) s
 
 -- }}}
 
