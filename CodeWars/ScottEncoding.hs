@@ -48,28 +48,48 @@ partition = error "partition"
 
 newtype SList a = SList { runList :: forall b. b -> (a -> SList a -> b) -> b }
 toList :: SList a -> [a]
-toList = error "toList"
+toList (SList l) = l [] (\a lst -> a : toList lst)
 fromList :: [a] -> SList a
 fromList []     = SList const
 fromList (x:xs) = SList $ \_ f -> f x (fromList xs)
 cons :: a -> SList a -> SList a
 cons x xs = SList $ \_ f -> f x xs
+
 concat :: SList a -> SList a -> SList a
-concat = error "concat"
+concat l1 l2 = runList l1 l2 $ \a xs -> cons a (concat xs l2)
+
 null :: SList a -> Bool
-null = error "null"
+null (SList xs) = xs True (\_ _ -> False)
+
 length :: SList a -> Int
-length = error "length"
+
+length l = runList l 0 (\a xs -> 1 + length xs)
+
 map :: (a -> b) -> SList a -> SList b
-map = error "map"
+map f l = runList l (SList const) $ \a xs -> cons (f a) (map f xs)
+
 zip :: SList a -> SList b -> SList (SPair a b)
-zip = error "zip"
+zip l1 l2 = case zipHead l1 l2 of
+                Nothing -> (SList const)
+                Just (p, xs, ys) -> p `cons` zip xs ys
+                where zipHead l1 l2 = do
+                        (x, xs) <- unconsL l1
+                        (y, ys) <- unconsL l2
+                        return (SPair $ \f -> f x y, xs, ys)
+
+unconsL l = runList l Nothing (\x xs -> Just (x, xs))
+
 foldl :: (b -> a -> b) -> b -> SList a -> b
-foldl = error "foldl"
+foldl f ini l = case unconsL l of
+                    Nothing -> ini
+                    Just (x, xs) -> foldl f (f ini x) xs
+
 foldr :: (a -> b -> b) -> b -> SList a -> b
-foldr = error "foldr"
+foldr f = foldl (flip f)
+
 take :: Int -> SList a -> SList a
-take = error "take"
+take i l | i < 1 = SList const
+         | otherwise = runList l (SList const) $ \x xs -> x `cons` (take (i - 1) xs)
 
 
 
