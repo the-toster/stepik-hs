@@ -31,7 +31,7 @@ isJust m = runMaybe m False (const True)
 isNothing :: SMaybe a -> Bool
 isNothing = not . isJust
 catMaybes :: SList (SMaybe a) -> SList a
-catMaybes = error "catMaybes"
+catMaybes = foldr (\ma ini -> runMaybe ma ini $ \a -> a `cons` ini) (SList const)
 
 newtype SEither a b = SEither { runEither :: forall c. (a -> c) -> (b -> c) -> c }
 toEither :: SEither a b -> Either a b
@@ -44,7 +44,15 @@ isLeft e = runEither e (const True) (const False)
 isRight :: SEither a b -> Bool
 isRight = not . isLeft
 partition :: SList (SEither a b) -> SPair (SList a) (SList b)
-partition = error "partition"
+partition = foldr f (SPair $ \f -> f (SList const) (SList const)) where
+    f e ini = runEither e l r where
+        l a = SPair $ \f -> f (a `cons` fst ini) (snd ini)
+        r b = SPair $ \f -> f (fst ini) (b `cons` snd ini)
+
+
+eitherList = fromList [fromEither $ Left 1, fromEither $ Left 2, fromEither $ Right 3, fromEither $ Right 4]
+testPart = partition $ eitherList
+tst = (toList $ fst testPart, toList $ snd testPart)
 
 newtype SList a = SList { runList :: forall b. b -> (a -> SList a -> b) -> b }
 toList :: SList a -> [a]
@@ -62,7 +70,6 @@ null :: SList a -> Bool
 null (SList xs) = xs True (\_ _ -> False)
 
 length :: SList a -> Int
-
 length l = runList l 0 (\a xs -> 1 + length xs)
 
 map :: (a -> b) -> SList a -> SList b
@@ -85,7 +92,9 @@ foldl f ini l = case unconsL l of
                     Just (x, xs) -> foldl f (f ini x) xs
 
 foldr :: (a -> b -> b) -> b -> SList a -> b
-foldr f = foldl (flip f)
+foldr f ini l = case unconsL l of
+                    Nothing -> ini
+                    Just (x, xs) -> x `f` (foldr f ini xs)
 
 take :: Int -> SList a -> SList a
 take i l | i < 1 = SList const
