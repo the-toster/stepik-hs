@@ -53,7 +53,7 @@ fromList :: [a] -> SList a
 fromList []     = SList const
 fromList (x:xs) = SList $ \_ f -> f x (fromList xs)
 cons :: a -> SList a -> SList a
-cons = error "cons"
+cons x xs = SList $ \_ f -> f x xs
 concat :: SList a -> SList a -> SList a
 concat = error "concat"
 null :: SList a -> Bool
@@ -70,3 +70,9 @@ foldr :: (a -> b -> b) -> b -> SList a -> b
 foldr = error "foldr"
 take :: Int -> SList a -> SList a
 take = error "take"
+
+
+
+
+reduce :: Num a => a -> SList a -> a
+reduce i sl = i + 10 * runList sl 0 reduce
