@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs, DataKinds,
              TypeFamilies, UndecidableInstances #-}
-{-# OPTIONS_GHC -Wall #-}
+{-# OPTIONS_GHC -Wincomplete-patterns #-}
 module OddsAndEvens where
 
 -- | The natural numbers.
@@ -81,15 +81,14 @@ oddTimesOdd n (NextOdd m) = oddPlusEven n $ oddPlusOdd n $ oddTimesOdd n m
 -- | Proves even * odd = even
 evenTimesOdd :: Even n -> Odd m -> Even (Mult n m)
 evenTimesOdd ZeroEven OneOdd = ZeroEven
---evenTimesOdd ZeroEven m = oddTimesEven m ZeroEven
-
---evenTimesOdd n (NextOdd m) = evenPlusEven n $ evenPlusEven n (evenTimesOdd n m)
+evenTimesOdd ZeroEven (NextOdd m) = evenTimesOdd ZeroEven m
+evenTimesOdd n (NextOdd m) = evenPlusEven n $ evenPlusEven n (evenTimesOdd n m)
+evenTimesOdd (NextEven n) OneOdd =oddPlusOdd OneOdd $ oddPlusEven OneOdd $ evenTimesOdd n OneOdd
 
 -- | Proves odd * even = even
 oddTimesEven :: Odd n -> Even m -> Even (Mult n m)
 oddTimesEven _ ZeroEven = ZeroEven
---oddTimesEven n (NextEven m) = oddPlusOdd n $ oddPlusEven n (oddTimesEven n m)
-
+oddTimesEven n (NextEven m) = oddPlusOdd n $ oddPlusEven n (oddTimesEven n m)
 
 
 -- Representations to Integers

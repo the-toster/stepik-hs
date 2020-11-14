@@ -1,5 +1,26 @@
-{-# LANGUAGE FlexibleInstances, TypeFamilies, FunctionalDependencies, UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances,
+    TypeFamilies,
+    FunctionalDependencies,
+    UndecidableInstances
+    #-}
+
 module PolyvariadicFunctions where
+
+-- `polyList` turns its arguments into a list, polymorphically.
+class PolyListType a t | a -> t where
+    polyListT :: a -> t
+
+instance PolyListType [a] [a] where
+    polyListT acc = acc
+
+instance PolyListType a (a -> r) => PolyListType a (a -> r) where
+    polyListT acc = \x -> polyListT $ acc ++ [x]
+
+polyList :: (PolyListType a t) => t
+polyList = polyListT []
+
+
+
 
 -- `polyAdd` sums its arguments, all `Int`s.
 class PolyAddType t where
@@ -13,20 +34,6 @@ instance (a ~ Int, PolyAddType r) => PolyAddType (a -> r) where
 
 polyAdd :: (PolyAddType t) => t
 polyAdd = polyAddT 0
-
--- `polyList` turns its arguments into a list, polymorphically.
-class PolyListType a t | a -> t where
-    polyListT :: a -> t
-
-instance PolyListType t t where
-    polyListT acc = acc
-
-instance PolyListType a (a -> r) where
-    polyListT acc = \x -> polyListT $ acc ++ [x]
-
-polyList :: (PolyListType a t) => t
-polyList = polyListT []
-
 
 ---- `polyWords` turns its arguments into a spaced string.
 
