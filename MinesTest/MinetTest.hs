@@ -1,10 +1,33 @@
 module MinerTest where
-
-import TaskTypes
-import MinesOrDieAndrey as A
-import EscapeTheMinesOrDie as B (solve)
-
 import Data.List (transpose)
+
+import TaskTypes -- Ходы и координаты
+import MinesOrDieAndrey as A -- Андрея
+import EscapeTheMinesOrDie as B (solve) -- Мое
+
+
+
+
+-- это запустить в ghci
+drw = visualSolve B.solve charMap (0, 0) (10, 10)
+
+-- рисовалка
+visualSolve solver charMap start door =
+    let
+        m = unmap charMap
+        solution = solver m start door
+    in case solution of
+        Nothing -> putStr "No solution found"
+        Just moves -> putStr $ prettyPrint $ transpose $ drawSolution charMap start door moves
+
+-- тесты последнего лабиринта
+tst = [
+        B.solve m  (0, 0) (11, 11) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R,R,D],
+        A.solve m  (0, 0) (11, 11) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R,R,D],
+        B.solve m  (0, 0) (10, 10) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R],
+        A.solve m  (0, 0) (10, 10) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R]
+      ]
+
 
 charMap =               ["   ##   #   "
                           ,"## #  #   # "
@@ -21,23 +44,6 @@ charMap =               ["   ##   #   "
 
 m = unmap charMap
 unmap = map (map (== ' '))
-
-tst = [
-        B.solve m  (0, 0) (11, 11) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R,R,D],
-        A.solve m  (0, 0) (11, 11) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R,R,D],
-        B.solve m  (0, 0) (10, 10) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R],
-        A.solve m  (0, 0) (10, 10) == Just [D,D,R,R,U,U,R,R,D,D,R,R,U,U,R,R,D,D,R,R,R,D,D,L,D,L,L,L,U,L,L,D,L,L,U,L,L,D,L,D,D,R,D,D,L,D,D,R,R,R,U,U,U,U,R,R,D,D,R,R,D,R,R,R]
-      ]
-
-drw = visualSolve B.solve charMap (0, 0) (10, 10)
-
-visualSolve solver charMap start door =
-    let
-        m = unmap charMap
-        solution = solver m start door
-    in case solution of
-        Nothing -> putStr "No solution found"
-        Just moves -> putStr $ prettyPrint $ transpose $ drawSolution charMap start door moves
 
 prettyPrint :: [String] -> String
 prettyPrint [] = ""
