@@ -11,14 +11,14 @@ import EscapeTheMinesOrDie as B (solve) -- Мое
 -- это запустить в ghci
 drw = visualSolve B.solve charMap (0, 0) (10, 10)
 
--- рисовалка
+-- рисовалка, там можно вызвать transpose, перед prettyPrint, чтобы повернуть карту, но все равно непонятно выглядит
 visualSolve solver charMap start door =
     let
         m = unmap charMap
         solution = solver m start door
     in case solution of
         Nothing -> putStr "No solution found"
-        Just moves -> putStr $ prettyPrint $ transpose $ drawSolution charMap start door moves
+        Just moves -> putStr $ prettyPrint $ drawSolution charMap start door moves
 
 -- тесты последнего лабиринта
 tst = [
