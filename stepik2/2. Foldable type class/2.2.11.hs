@@ -16,5 +16,5 @@ instance Foldable Triple where
 
 instance Traversable Triple where
 --      traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
---      traverse f (Tr a b c) = Tr (f <*> a) (f <*> b) (f <*> c)
-      traverse f x = (f) <*> x
+      traverse f (Tr a b c) = pure Tr <*> f a  <*> f b <*> f c
+--      traverse f x = pure Tr
