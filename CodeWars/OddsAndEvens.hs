@@ -31,7 +31,6 @@ oddPlusOne :: Odd n -> Even (S n)
 oddPlusOne OneOdd =  NextEven ZeroEven
 oddPlusOne (NextOdd n) =  NextEven (oddPlusOne n)
 
-
 -- | Adds two natural numbers together.
 -- Notice how the definition pattern matches.
 type family   Add (n :: Nat) (m :: Nat) :: Nat
@@ -61,34 +60,28 @@ oddPlusEven (NextOdd n) m = NextOdd (oddPlusEven n m)
 
 -- | Multiplies two natural numbers.
 type family   Mult (n :: Nat) (m :: Nat) :: Nat
-type instance Mult n Z = Z
-type instance Mult n (S m) = Add n (Mult n m)
+type instance Mult Z m = Z
+type instance Mult (S n) m = Add (Mult n m) m
 
 -- | Proves even * even = even
 evenTimesEven :: Even n -> Even m -> Even (Mult n m)
-evenTimesEven n ZeroEven = ZeroEven
-evenTimesEven n (NextEven m) = evenPlusEven n $ evenPlusEven n (evenTimesEven n m)
+evenTimesEven ZeroEven n = ZeroEven
+evenTimesEven (NextEven n) m = evenPlusEven (evenPlusEven (evenTimesEven n m) m) m
 
-
----- | Proves odd * odd = odd
+-- | Proves odd * odd = odd
 oddTimesOdd :: Odd n -> Odd m -> Odd (Mult n m)
-oddTimesOdd OneOdd OneOdd = OneOdd
-oddTimesOdd OneOdd (NextOdd m) = oddPlusEven OneOdd $ oddPlusOdd OneOdd (oddTimesOdd OneOdd m)
-oddTimesOdd (NextOdd n) OneOdd = oddPlusEven OneOdd $ oddPlusOdd OneOdd $ oddTimesOdd n OneOdd
-oddTimesOdd n (NextOdd m) = oddPlusEven n $ oddPlusOdd n $ oddTimesOdd n m
-----oddTimesOdd n m =
+oddTimesOdd OneOdd n  = n
+oddTimesOdd (NextOdd n) m  =  evenPlusOdd (oddPlusOdd (oddTimesOdd n m) m) m
 
 -- | Proves even * odd = even
 evenTimesOdd :: Even n -> Odd m -> Even (Mult n m)
-evenTimesOdd ZeroEven OneOdd = ZeroEven
-evenTimesOdd ZeroEven (NextOdd m) = evenTimesOdd ZeroEven m
-evenTimesOdd n (NextOdd m) = evenPlusEven n $ evenPlusEven n (evenTimesOdd n m)
-evenTimesOdd (NextEven n) OneOdd =oddPlusOdd OneOdd $ oddPlusEven OneOdd $ evenTimesOdd n OneOdd
+evenTimesOdd ZeroEven m = ZeroEven
+evenTimesOdd (NextEven n) m = oddPlusOdd (evenPlusOdd (evenTimesOdd n m) m) m
 
--- | Proves odd * even = even
+---- | Proves odd * even = even
 oddTimesEven :: Odd n -> Even m -> Even (Mult n m)
-oddTimesEven _ ZeroEven = ZeroEven
-oddTimesEven n (NextEven m) = oddPlusOdd n $ oddPlusEven n (oddTimesEven n m)
+oddTimesEven OneOdd m = m
+oddTimesEven (NextOdd n) m = evenPlusEven (evenPlusEven (oddTimesEven n m) m) m
 
 
 -- Representations to Integers
