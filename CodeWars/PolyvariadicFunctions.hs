@@ -1,8 +1,9 @@
 {-# LANGUAGE FlexibleInstances,
     TypeFamilies,
     FunctionalDependencies,
-    UndecidableInstances
+    TypeOperators
     #-}
+--     UndecidableInstances,
 
 module PolyvariadicFunctions where
 
@@ -13,7 +14,7 @@ class PolyListType a t | a -> t where
 instance PolyListType [a] [a] where
     polyListT acc = acc
 
-instance PolyListType a (a -> r) => PolyListType a (a -> r) where
+instance (a/=r, PolyListType a (a -> r)) => PolyListType a (a -> r) where
     polyListT acc = \x -> polyListT $ acc ++ [x]
 
 polyList :: (PolyListType a t) => t
