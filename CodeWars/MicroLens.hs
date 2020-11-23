@@ -83,7 +83,7 @@ type Prism s t a b =
 
 -- | A lens focusing on the first element in a pair
 _1 :: Lens (a, x) (b, x) a b
-_1 = error "todo"
+_1 k pair = _
 
 -- | A lens focusing on the second element in a pair
 _2 :: Lens (x, a) (x, b) a b
@@ -98,7 +98,7 @@ _2 = error "todo"
 -- view :: Lens s t a b -> (s -> a)
 -- @
 view :: Optic (->) (K a) s t a b -> (s -> a)
-view optic s = _
+view optics = \s -> (optics id) s
 -- (view _1 (1,2)) == 1
 -- | A function which takes a lens and a transformation function
 -- and applies that transformer at the focal point of the lens.
